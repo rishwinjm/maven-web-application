@@ -15,6 +15,7 @@
 <h2 align="center">Practice repeatedly.Enjoyyy Learning</h2>
 <h1 align="center">All the Very best for your career..Happy learning.</h1>
 <h1 align="center">Keep up the Good Work with Learning </h1/>
+<h1>Spend time with Rishi.Your career is important.More important is his future.</h1>
 <hr>
 <div style="text-align: center;">
 	<span>
