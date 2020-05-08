@@ -21,7 +21,7 @@ stage('Build')
 {
 sh "${mavenHome}/bin/mvn clean package"
 }
-
+/*
 stage('SonarQubeReportExecution')
 {
 sh "${mavenHome}/bin/mvn sonar:sonar"
@@ -43,5 +43,5 @@ stage('EmailNotification')
 {
     emailext body: 'This is a sample mail to test Jenkins Pipeline report', subject: 'Jenkins Pipeline Scripted way', to: 'maheswarimadhavan@gmail.com'
 }
-
+*/
 }
