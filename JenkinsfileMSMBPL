@@ -1,0 +1,47 @@
+node
+{
+    
+def mavenHome = tool name:"Maven3.6.3"
+
+  echo "GitHub BranhName ${env.BRANCH_NAME}"
+  echo "Jenkins Job Number ${env.BUILD_NUMBER}"
+  echo "Jenkins Node Name ${env.NODE_NAME}"
+  
+  echo "Jenkins Home ${env.JENKINS_HOME}"
+  echo "Jenkins URL ${env.JENKINS_URL}"
+  echo "JOB Name ${env.JOB_NAME}"
+  
+properties([[$class: 'JiraProjectProperty'], buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
+stage('CheckoutCode')
+{
+git branch: 'development', credentialsId: '3d0f03fe-8d06-47d0-844f-883707fd183d', url: 'https://github.com/rishwinjm/maven-web-application.git'
+}
+
+stage('Build')
+{
+sh "${mavenHome}/bin/mvn clean package"
+}
+
+stage('SonarQubeReportExecution')
+{
+sh "${mavenHome}/bin/mvn sonar:sonar"
+}
+
+stage('UploadArtifactsInNexus')
+{
+    sh "${mavenHome}/bin/mvn clean deploy"
+}
+
+stage('DeployAppIntoTomcat')
+{
+    sshagent(['9d9fe748-48ad-462c-897b-37d4edf17988']) {
+    sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.127.162.217:/opt/apache-tomcat-9.0.34/webapps/maven-web-application.war"
+    }
+}
+
+stage('EmailNotification')
+{
+    emailext body: 'This is a sample mail to test Jenkins Pipeline report', subject: 'Jenkins Pipeline Scripted way', to: 'maheswarimadhavan@gmail.com'
+}
+
+}
